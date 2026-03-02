@@ -1,4 +1,4 @@
-#Homework2 by Dmitrii Shurkhai
+#Homework 2 by Dmitrii Shurkhai
 
 #Question1
 #Using the sqldf() function found in the sqldf package to select data from
