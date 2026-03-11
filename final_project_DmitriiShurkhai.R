@@ -64,31 +64,45 @@ par(op)
 
 # f) Boxplots with respect to ocean_proximity:
 #    housing_median_age, median_income, median_house_value vs ocean_proximity
+# order categories
+
+# layout: 1 row, 3 plots
+par(mfrow = c(1,3), mar = c(7,4,4,2))
+
+# 1. housing age
 boxplot(
   housing_median_age ~ ocean_proximity,
   data = housing,
-  main = "Housing Median Age by Ocean Proximity",
-  xlab = "Ocean Proximity",
-  ylab = "Housing Median Age (years)",
-  las = 2
+  main = "Housing Age",
+  xlab = "",
+  ylab = "Age",
+  las = 2,
+  col = "lightblue",
+  outline = FALSE
 )
 
+# 2. median income
 boxplot(
   median_income ~ ocean_proximity,
   data = housing,
-  main = "Median Income by Ocean Proximity",
-  xlab = "Ocean Proximity",
-  ylab = "Median Income (10k USD units)",
-  las = 2
+  main = "Median Income",
+  xlab = "",
+  ylab = "Income",
+  las = 2,
+  col = "lightgreen",
+  outline = FALSE
 )
 
+# 3. house value (log scale)
 boxplot(
-  median_house_value ~ ocean_proximity,
+  log(median_house_value) ~ ocean_proximity,
   data = housing,
-  main = "Median House Value by Ocean Proximity",
-  xlab = "Ocean Proximity",
-  ylab = "Median House Value (USD)",
-  las = 2
+  main = "House Value",
+  xlab = "",
+  ylab = "Log Value",
+  las = 2,
+  col = "lightcoral",
+  outline = FALSE
 )
 
 ########################
@@ -175,6 +189,8 @@ test  <- cleaned_housing[-train_idx, ]
 train_x <- train[, setdiff(names(train), response)]
 train_y <- train[[response]]  # numeric vector
 
+library(randomForest) #import rf
+
 # Fit model
 rf <- randomForest(
   x = train_x,
@@ -214,6 +230,22 @@ cat("Test RMSE:    ", test_rmse, "\n")
 # e) Variable importance plot
 varImpPlot(x = rf, main = "Random Forest Variable Importance")
 
-#############################################################
+
+# Additional I decide to make Predicted vs. actual housing prices graph
+# This plot compares the model's predictions with the true house values.
+# Points closer to the red diagonal line indicate more accurate predictions.
+# The vertical cluster near $500,000 appears because the dataset caps house values at that level.
+plot(
+  test_y, pred_y,
+  pch = 16,
+  col = rgb(0, 0, 1, 0.3),
+  xlab = "Actual House Value ($)",
+  ylab = "Predicted House Value ($)",
+  main = "Predicted vs. Actual Housing Prices"
+)
+
+abline(0, 1, col = "red", lwd = 2)
+
+############################################################
 # Final
-#############################################################
+############################################################
